@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Build" default="run" basedir=".."
+         xmlns="http://nant.sf.net/release/0.92/nant.xsd">
+  
+  <loadtasks assembly="C:\Program Files\CSG\DevTools\Lib\NAnt\Dev.NAnt.Tasks.dll" />
+  
+  <initproperty name="version.assembly" default="${version::assembly-from-tag()}" />
+  <initproperty name="version.package" default="${version::package-from-tag()}" />
+  <fail if="${version.package == '' or version.assembly == ''}" 
+        message="Either tag the commit or explicitly specify version.package and version.assembly from the command line" />
+  
+  <target name="run">
+    <restorepackages target="Source\EasyNetQ.sln" />
+    <msbuild project="Build\EasyNetQ.proj" target="Version;Build;MergeManagementClient;PackageManagementClient">
+      <properties>
+        <property name="Version" value="${version.assembly}" />
+        <property name="PackageVersion" value="${version.package}" />
+      </properties>
+    </msbuild>
+    
+    <copy todir="Artifacts/Publish/csg.oss.nuget">
+      <fileset basedir="Package\EasyNetQ.Management.Client">
+        <include name="*.nupkg" />
+      </fileset>
+    </copy>
+  </target>
+</project>
