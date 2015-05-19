@@ -10,9 +10,6 @@
         <Package>$(BaseDir)\Package</Package>
         <Source>$(BaseDir)\Source</Source>
         <ILRepack>$(Tools)\ILRepack\ILRepack.exe</ILRepack>
-        <BuildNumber Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' ">$(APPVEYOR_BUILD_NUMBER)</BuildNumber>
-        <BuildNumber Condition=" '$(BUILD_NUMBER)' != '' ">$(BUILD_NUMBER)</BuildNumber>
-        <BuildNumber Condition=" '$(BuildNumber)' == '' ">0</BuildNumber>
     </PropertyGroup>
 
     <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
@@ -22,7 +19,7 @@
     <Target Name="Version">
         <FileUpdate Files="$(Source)\Version.cs"
             Regex="AssemblyVersion\(&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)&quot;\)"
-            ReplacementText="AssemblyVersion(&quot;$1.$2.$3.$(BuildNumber)&quot;)" />
+            ReplacementText="AssemblyVersion(&quot;$(Version)&quot;)" />
     </Target>
 
     <ItemGroup>
