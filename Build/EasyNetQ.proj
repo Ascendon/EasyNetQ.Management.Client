@@ -42,7 +42,7 @@
     <Target Name="MergeManagementClient" DependsOnTargets="Test">
         <Exec
             WorkingDirectory="$(OutputDir)"
-            Command="$(ILRepack) /internalize /targetplatform:v4 /out:$(OutputDir)\EasyNetQ.Management.Client.dll $(OutputDir)\EasyNetQ.Management.Client.dll $(OutputDir)\Newtonsoft.Json.dll" />
+            Command="$(ILRepack) /internalize /targetplatform:v4 /keyfile:$(Source)\EasyNetQ.snk /out:$(OutputDir)\EasyNetQ.Management.Client.dll $(OutputDir)\EasyNetQ.Management.Client.dll $(OutputDir)\Newtonsoft.Json.dll" />
     </Target>
 
     <Target Name="PackageManagementClient" DependsOnTargets="MergeManagementClient">
