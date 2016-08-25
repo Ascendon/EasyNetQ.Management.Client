@@ -2,11 +2,23 @@
 using System.Reflection;
 
 // EasyNetQ.Management.Client version number: <major>.<minor>.<non-breaking-feature>.<build>
-[assembly: AssemblyVersion("0.47.16.0")]
+[assembly: AssemblyVersion("0.51.1.0")]
 [assembly: CLSCompliant(true)]
 
 // Note: until version 1.0 expect breaking changes on 0.X versions.
-
+// 0.51.1.0 Modified long for Queue.Memory/Node.Mem* type
+// 0.51.0.0 Consolidated the way queue lengths and message rates are being returned. Updated to the post 3.1.0 api format.
+// 0.50.2.0 Escape / with %2f for exchange and queue names
+// 0.50.1.0 RabbitMq 3.7.0 Forward Compatibility Fix.  PUT responses now use 201 Created (under Cowboy) instead of 204 No Content (WebMachine - pre 3.7.0)
+// 0.50.0.0 Added ParameterShovelValue to create dynamic shovels as a parameter
+// 0.49.0.0 Removed the default user tag "administrator" when creating new users via the management api
+// 0.48.22.0 Fixed serialization for null members on create a parameter
+// 0.48.21.0 Fixed error on create a parameter
+// 0.48.20.0 Escape # with %23 for a queue name
+// 0.47.20.0 Fixed serialization exception for cases when queue.consumer_details[0].channel_details.peer_port="unknown"
+// 0.47.19.0 Implemented support of 'apply-to' property for Policy object and 'federation-upstream' property for PolicyDefinition object
+// 0.47.18.0 Modified ConsumerDetails and Queue classes to deserialize channel_detail when running GetQueue()
+// 0.47.17.0 Added "x-delayed-message" as valid exchange type
 // 0.47.16.0 Added an overload for GetBindings(Exchange, Exchange)
 // 0.47.15.0 Updated to newtonsoft.json 7.0.1
 // 0.47.14.0 Modified long for DiskFreeLimit/MemUsed type

@@ -286,6 +286,50 @@ namespace EasyNetQ.Management.Client.IntegrationTests
         }
 
         [Test]
+        public void Should_be_able_to_get_a_queue_by_name_with_detailed_length_information()
+        {
+            var age = 60;
+            var increment = 10;
+            var vhost = new Vhost { Name = vhostName };
+            var queue = managementClient.GetQueue(testQueue, vhost, lengthsCriteria: new GetLengthsCriteria(age, increment));
+            queue.Name.ShouldEqual(testQueue);
+            queue.MessagesDetails.Samples.Count.ShouldEqual(7);
+            queue.MessagesReadyDetails.Samples.Count.ShouldEqual(7);
+            queue.MessagesUnacknowledgedDetails.Samples.Count.ShouldEqual(7);
+        }
+
+        [Test]
+        public void Should_be_able_to_get_a_queue_by_name_with_detailed_rates_information()
+        {
+            var age = 60;
+            var increment = 10;
+            var vhost = new Vhost { Name = vhostName };
+            var queue = managementClient.GetQueue(testQueue, vhost, ratesCriteria: new GetRatesCriteria(age, increment));
+            queue.Name.ShouldEqual(testQueue);
+            // All MessageStats are not always available, so tricky to test
+            //queue.MessageStats.DeliverGetDetails.Samples.Count.ShouldEqual(7);
+            //queue.MessageStats.GetNoAckDetails.Samples.Count.ShouldEqual(7);
+            //queue.MessageStats.PublishDetails.Samples.Count.ShouldEqual(7);
+        }
+
+        [Test]
+        public void Should_be_able_to_get_a_queue_by_name_with_all_detailed_information()
+        {
+            var age = 60;
+            var increment = 10;
+            var vhost = new Vhost { Name = vhostName };
+            var queue = managementClient.GetQueue(testQueue, vhost, lengthsCriteria: new GetLengthsCriteria(age, increment), ratesCriteria: new GetRatesCriteria(age, increment));
+            queue.Name.ShouldEqual(testQueue);
+            queue.MessagesDetails.Samples.Count.ShouldEqual(7);
+            queue.MessagesReadyDetails.Samples.Count.ShouldEqual(7);
+            queue.MessagesUnacknowledgedDetails.Samples.Count.ShouldEqual(7);
+            // All MessageStats are not always available, so tricky to test
+            //queue.MessageStats.DeliverGetDetails.Samples.Count.ShouldEqual(7);
+            //queue.MessageStats.GetNoAckDetails.Samples.Count.ShouldEqual(7);
+            //queue.MessageStats.PublishDetails.Samples.Count.ShouldEqual(7);
+        }
+
+        [Test]
         public void Should_be_able_to_create_a_queue()
         {
             var vhost = managementClient.GetVhost(vhostName);
@@ -712,6 +756,59 @@ namespace EasyNetQ.Management.Client.IntegrationTests
             Assert.AreEqual(1, managementClient.GetPolicies().Count(
                 p => p.Name == policyName
                      && p.Vhost == vhostName
+                     && p.ApplyTo == ApplyMode.All
+                     && p.Definition.HaMode == haMode
+                     && p.Definition.HaSyncMode == haSyncMode));
+        }
+
+        [Test]
+        public void Should_be_able_to_create_queues_only_policies()
+        {
+            var policyName = "asamplepolicy-queue-only";
+            var haMode = HaMode.All;
+            var haSyncMode = HaSyncMode.Automatic;
+            managementClient.CreatePolicy(new Policy
+            {
+                Name = policyName,
+                Pattern = "averyuncommonpattern",
+                Vhost = vhostName,
+                ApplyTo = ApplyMode.Queues,
+                Definition = new PolicyDefinition
+                {
+                    HaMode = haMode,
+                    HaSyncMode = haSyncMode
+                }
+            });
+            Assert.AreEqual(1, managementClient.GetPolicies().Count(
+                p => p.Name == policyName
+                     && p.Vhost == vhostName
+                     && p.ApplyTo == ApplyMode.Queues
+                     && p.Definition.HaMode == haMode
+                     && p.Definition.HaSyncMode == haSyncMode));
+        }
+
+        [Test]
+        public void Should_be_able_to_create_exchanges_only_policies()
+        {
+            var policyName = "asamplepolicy-exchange-only";
+            var haMode = HaMode.All;
+            var haSyncMode = HaSyncMode.Automatic;
+            managementClient.CreatePolicy(new Policy
+            {
+                Name = policyName,
+                Pattern = "averyuncommonpattern",
+                Vhost = vhostName,
+                ApplyTo = ApplyMode.Exchanges,
+                Definition = new PolicyDefinition
+                {
+                    HaMode = haMode,
+                    HaSyncMode = haSyncMode
+                }
+            });
+            Assert.AreEqual(1, managementClient.GetPolicies().Count(
+                p => p.Name == policyName
+                     && p.Vhost == vhostName
+                     && p.ApplyTo == ApplyMode.Exchanges
                      && p.Definition.HaMode == haMode
                      && p.Definition.HaSyncMode == haSyncMode));
         }
@@ -867,6 +964,51 @@ namespace EasyNetQ.Management.Client.IntegrationTests
                      && p.Definition.MessageTtl == messageTtl
                      && p.Definition.Expires == expires
                      && p.Definition.MaxLength == maxLength));
+        }
+
+
+        [Test]
+        [Explicit]
+        public void Should_be_able_to_create_federation_upstream_policy()
+        {
+            var policyName = "a-sample-federation-upstream-policy";
+            
+            managementClient.CreatePolicy(new Policy
+            {
+                Name = policyName,
+                Pattern = "averyuncommonpattern",
+                Vhost = vhostName,
+                Definition = new PolicyDefinition
+                {
+                    FederationUpstream = "my-upstream"
+                }
+            });
+            Assert.AreEqual(1, managementClient.GetPolicies().Count(
+                p => p.Name == policyName
+                     && p.Vhost == vhostName
+                     && p.Definition.FederationUpstream == "my-upstream"));
+        }
+
+        [Test]
+        [Explicit]
+        public void Should_be_able_to_create_federation_upstream_set_policy()
+        {
+            var policyName = "a-sample-federation-upstream-set-policy";
+
+            managementClient.CreatePolicy(new Policy
+            {
+                Name = policyName,
+                Pattern = "averyuncommonpattern",
+                Vhost = vhostName,
+                Definition = new PolicyDefinition
+                {
+                    FederationUpstreamSet = "my-upstream-set"
+                }
+            });
+            Assert.AreEqual(1, managementClient.GetPolicies().Count(
+                p => p.Name == policyName
+                     && p.Vhost == vhostName
+                     && p.Definition.FederationUpstreamSet == "my-upstream-set"));
         }
 
         [Test]
