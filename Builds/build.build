@@ -4,8 +4,8 @@
   
   <loadtasks assembly="C:\Program Files\CSG\DevTools\Lib\NAnt\Dev.NAnt.Tasks.dll" />
   
-  <initproperty name="version.assembly" default="0.51.1.105" />
-  <initproperty name="version.package" default="0.51.1.105" />
+  <initproperty name="version.assembly" default="0.51.1.106" />
+  <initproperty name="version.package" default="0.51.1.106" />
   <fail if="${version.package == '' or version.assembly == ''}" 
         message="Either tag the commit or explicitly specify version.package and version.assembly from the command line" />
   
