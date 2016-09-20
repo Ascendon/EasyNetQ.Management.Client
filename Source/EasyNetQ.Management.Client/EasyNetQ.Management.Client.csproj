@@ -94,6 +94,7 @@
     <Compile Include="Model\PublishResult.cs" />
     <Compile Include="Model\Queue.cs" />
     <Compile Include="Model\QueueInfo.cs" />
+    <Compile Include="Model\QueueMode.cs" />
     <Compile Include="Model\QueueTotals.cs" />
     <Compile Include="Model\ParameterShovelValue.cs" />
     <Compile Include="Model\User.cs" />

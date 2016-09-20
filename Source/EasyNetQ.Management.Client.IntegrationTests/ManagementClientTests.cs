@@ -742,6 +742,7 @@ namespace EasyNetQ.Management.Client.IntegrationTests
             var policyName = "asamplepolicy";
             var haMode = HaMode.All;
             var haSyncMode = HaSyncMode.Automatic;
+            var lazyQueueMode = QueueMode.Lazy;
             managementClient.CreatePolicy(new Policy
             {
                 Name = policyName,
@@ -750,7 +751,8 @@ namespace EasyNetQ.Management.Client.IntegrationTests
                 Definition = new PolicyDefinition
                 {
                     HaMode = haMode,
-                    HaSyncMode = haSyncMode
+                    HaSyncMode = haSyncMode,
+                    QueueMode = lazyQueueMode
                 }
             });
             Assert.AreEqual(1, managementClient.GetPolicies().Count(
@@ -758,7 +760,8 @@ namespace EasyNetQ.Management.Client.IntegrationTests
                      && p.Vhost == vhostName
                      && p.ApplyTo == ApplyMode.All
                      && p.Definition.HaMode == haMode
-                     && p.Definition.HaSyncMode == haSyncMode));
+                     && p.Definition.HaSyncMode == haSyncMode
+                     && p.Definition.QueueMode == lazyQueueMode));
         }
 
         [Test]
